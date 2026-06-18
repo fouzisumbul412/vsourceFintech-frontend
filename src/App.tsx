@@ -15,6 +15,11 @@ import HeroSkeleton from "./components/HeroSkeleton";
 import DelayedPopup from "./components/DelayedPopup";
 import Footer from "./components/Footer";
 import Poonawalla from "./pages/ourpartner/poonawallapage";
+import Login from "./crm/pages/Login";
+import ProtectedRoute from "./crm/components/ProtectedRoute";
+import Dashboard from "./crm/pages/Dashboard";
+import DelayedPopupLeads from "./crm/pages/DelayedPopupLeads";
+import AbroadFormLeads from "./crm/pages/AbroadFormLeads";
 
 const CredilaPage = lazy(() => import("./pages/ourpartner/CredilaPage"));
 const NbfcPage = lazy(() => import("./pages/ourpartner/NbfcPage"));
@@ -114,16 +119,19 @@ const AppContent = () => {
   const [showForm, setShowForm] = useState(false);
   const location = useLocation();
   const [showFormIcon, setShowFormIcon] = useState(false);
+  const crmRoutes = location.pathname.startsWith("/crm");
   const isGoVirtualPage = location.pathname === "/meeting";
 
   // SHOW POPUP AFTER 3 SECONDS
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowForm(true);
-    }, 3000);
+useEffect(() => {
+  if (crmRoutes) return;
 
-    return () => clearTimeout(timer);
-  }, []);
+  const timer = setTimeout(() => {
+    setShowForm(true);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [crmRoutes]);
 
   useEffect(() => {
     AOS.init({
@@ -139,26 +147,33 @@ const AppContent = () => {
     AOS.refreshHard();
   }, [location.pathname]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY + window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
-      if (
-        scrollTop / docHeight >= 0.2 &&
-        !localStorage.getItem("vsource_form_submitted")
-      ) {
-        setShowForm(true);
-        window.removeEventListener("scroll", handleScroll);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+useEffect(() => {
+  if (crmRoutes) return;
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY + window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+
+    if (
+      scrollTop / docHeight >= 0.2 &&
+      !localStorage.getItem("vsource_form_submitted")
+    ) {
+      setShowForm(true);
+      window.removeEventListener("scroll", handleScroll);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [crmRoutes]);
+
+
   return (
-    <Layout>
+    <Layout showNavbar={!crmRoutes}>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen">
-        {!isGoVirtualPage && <Navbar />}
+        {!isGoVirtualPage && !crmRoutes && <Navbar />}
         <main>
           <Suspense fallback={<HeroSkeleton />}>
             <Routes>
@@ -291,29 +306,64 @@ const AppContent = () => {
 
               <Route path="/meeting" element={<GoVirtual />} />
               <Route path="*" element={<NotFound />} />
+
+              {/* crm pages */}
+               <Route
+          path="/crm/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/crm/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/crm/delayed-popup"
+          element={
+            <ProtectedRoute>
+              <DelayedPopupLeads />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/crm/abroad-form"
+          element={
+            <ProtectedRoute>
+              <AbroadFormLeads />
+            </ProtectedRoute>
+          }
+        />
             </Routes>
           </Suspense>
         </main>
 
-        {!isGoVirtualPage && <ContactBar />}
-        {!isGoVirtualPage && <Footer />}
+        {!isGoVirtualPage && !crmRoutes && <ContactBar />}
+        {!isGoVirtualPage  && !crmRoutes && <Footer />}
 
-        <ScrollToTopButton
-          showFormIcon={showFormIcon}
-          onFormIconClick={() => {
-            setShowForm(true);
-            setShowFormIcon(false);
-          }}
-        />
+       {!crmRoutes && (
+  <ScrollToTopButton
+    showFormIcon={showFormIcon}
+    onFormIconClick={() => {
+      setShowForm(true);
+      setShowFormIcon(false);
+    }}
+  />
+)}
 
-        {showForm && (
-          <DelayedPopup
-            onMinimize={() => {
-              setShowForm(false);
-              setShowFormIcon(true);
-            }}
-          />
-        )}
+        {!crmRoutes && showForm && (
+  <DelayedPopup
+    onMinimize={() => {
+      setShowForm(false);
+      setShowFormIcon(true);
+    }}
+  />
+)}
       </div>
     </Layout>
   );

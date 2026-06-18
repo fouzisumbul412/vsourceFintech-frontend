@@ -114,6 +114,14 @@ const DelayedPopup: React.FC<DelayedPopupProps> = ({ onMinimize }) => {
         `https://backend.vsourceoverseas.com/api/fintech-enquires`,
         payload,
       );
+      await axios.post(
+  "http://localhost:5000/api/delayed-popup/create",
+  {
+    studentName: name,
+    mobile: phoneNumber,
+    serviceRequired: selectedOption,
+  }
+);
       await fetch(
         "https://script.google.com/macros/s/AKfycbyCVtxlzPaUf8W5O7UlWJlqbCl1E5FO-A8aeGkKgtFheOkoWJIAY_itEFG1rOsZFf7-/exec",
         // "https://script.google.com/macros/s/AKfycbweggreBuHA2oxa8Fd7-yLmoB3-2_PhwgE-shKjNJHRIy2e6qShL46UcJ6hVlhQ94Oy/exec",
