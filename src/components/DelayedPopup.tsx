@@ -115,7 +115,7 @@ const DelayedPopup: React.FC<DelayedPopupProps> = ({ onMinimize }) => {
         payload,
       );
       await axios.post(
-  "http://localhost:5000/api/delayed-popup/create",
+  "/api/delayed-popup/create",
   {
     studentName: name,
     mobile: phoneNumber,
