@@ -44,6 +44,18 @@ const AbroadForm = () => {
           data: payload,
         },
       );
+await axios.post(
+  "http://localhost:5000/api/abroad-form/create",
+  {
+    name: payload.name,
+    email: payload.email,
+    mobile: payload.number,
+    country: payload.country,
+    admissionStatus: payload.admission_status,
+    loanType: payload.loanType,
+    loanAmount: payload.loanAmount,
+  }
+);
 
       await fetch(
         // "https://script.google.com/macros/s/AKfycbweggreBuHA2oxa8Fd7-yLmoB3-2_PhwgE-shKjNJHRIy2e6qShL46UcJ6hVlhQ94Oy/exec",
