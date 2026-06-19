@@ -45,7 +45,7 @@ const AbroadForm = () => {
         },
       );
 await axios.post(
-  "http://localhost:5000/api/abroad-form/create",
+  "/api/abroad-form/create",
   {
     name: payload.name,
     email: payload.email,

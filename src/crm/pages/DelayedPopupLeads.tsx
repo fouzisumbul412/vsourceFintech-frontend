@@ -35,7 +35,7 @@ export default function DelayedPopupLeads() {
 
   const response =
     await fetch(
-      "http://localhost:5000/api/delayed-popup/export",
+      "/api/delayed-popup/export",
       {
         headers: {
           Authorization:
