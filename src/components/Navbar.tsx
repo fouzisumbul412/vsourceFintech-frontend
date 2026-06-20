@@ -315,7 +315,7 @@ function Navbar() {
             src="/assets/images/fintech-logo.webp"
           />
           <img
-            src="/assets/images/vsource-21YearsLogo"
+            src="/assets/images/vsource-21YearsLogo.png"
             alt="21 Years Logo"
             className="h-20 md:h-18 ml-3 w-auto object-contain drop-shadow-md"
           />
